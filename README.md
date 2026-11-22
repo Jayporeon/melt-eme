@@ -306,7 +306,6 @@ lyrics.txt                    lyrics (Japanese, sections and timestamps)
 0 Lead Vocals.wav …           stems: lead vocal, backing vocals, drums, bass… (not in the repo)
 MIDI/                         MIDI for each stem
 mv/out/                       rendered videos (not in the repo)
-mv/NOTES.md                   production log: what changed in each version and why
 video/
   index.html, vite.config.ts  preview page
   src/main.ts                 loads data and fonts; preview mode / export mode

@@ -26,3 +26,6 @@ mv/data/edl.json
 .DS_Store
 Thumbs.db
 *.log
+
+# --- private production log ---
+mv/NOTES.md
