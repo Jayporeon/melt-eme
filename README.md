@@ -1,52 +1,53 @@
-# とけちゃう、エメ — 動態歌詞 MV
+# とけちゃう、エメ (Tokechau, Eme) — a kinetic-lyric music video
 
-歌手　Suno V6　／　作詞　Opus 5.5
+Vocals　Suno V6　／　Lyrics　Opus 5.5
 
-> **內容提醒**：本作品描寫藥物過量使用（市售止咳藥）、身心障礙與孤立，請斟酌觀看。
-> 若你正在經歷類似的困境，請向身邊的人或當地的心理支援專線求助。
+> **Content note:** this work depicts misuse of over-the-counter cough medicine (overdose), disability and isolation.
+> If you are going through something similar, please reach out to someone you trust or to a local mental-health helpline.
 
-這支 MV 的每一格畫面都是**程式即時算出來的**，沒有使用任何影片、照片或 AI 生成素材。
-主角エメ不直接出現，只以水滴、藥片、泡泡、螺旋這些符號暗示；畫面的主體是**動態歌詞**：
-每一段歌曲都有自己的文字動作（掉落堆積、直書、重擊、漂浮、溶化、螺旋、透明化、倒下、迴圈……），
-歌詞每個字都在歌聲唱到的那一刻由灰轉藍。
+Every frame of this music video is **computed by code**. No footage, photos or AI-generated images are used.
+Eme, the main character, never appears directly; she is only hinted at through drops of water, tablets, bubbles and spirals.
+The picture is the **lyrics in motion**: every section of the song has its own way of moving the words
+(falling into a pile, vertical writing, slams, floating, melting, a spiral, turning see-through, toppling over, an endless loop…),
+and every character turns from grey to blue at the moment it is sung.
 
-同一套程式可以：
+The same code can:
 
-- 在**瀏覽器裡即時播放**（邊播邊算圖，可以拖時間、逐格看）
-- **輸出成影片**（無頭 Chrome 逐格算圖 → ffmpeg 編碼，預設 2560×1440 60fps）
+- **play live in the browser**, rendering each frame as it plays (seek, step frame by frame)
+- **export a video**: headless Chrome renders every frame and ffmpeg encodes it (2560×1440, 60 fps by default)
 
-**線上觀看**：<https://jayporeon.github.io/melt-eme/>：瀏覽器即時算圖的 MV，載入後按空白鍵播放（需要支援 WebGL2 的瀏覽器，建議用電腦版 Chrome 或 Edge）。
+**Watch online:** <https://jayporeon.github.io/melt-eme/> — the MV rendered live in your browser. Press **Space** to play once it has loaded (needs a browser with WebGL2; desktop Chrome or Edge recommended).
 
-輸出的影片檔（2560×1440 約 1.4 GB、1920×1080 約 467 MB）太大，不放在 repo 裡；請到 [Releases](https://github.com/Jayporeon/melt-eme/releases) 下載，或用〈輸出影片〉自己算出來。
+The rendered video files (2560×1440, about 1.4 GB; 1920×1080, about 467 MB) are too large for the repository. Download them from [Releases](https://github.com/Jayporeon/melt-eme/releases), or render them yourself (see [Export a video](#export-a-video)).
 
-### 這個 repo 裡沒有的檔案
+### Files not in this repository
 
-為了控制大小，以下檔案沒有上傳（列在 `.gitignore`）：
+To keep the repository small, these files are not included (they are listed in `.gitignore`):
 
-- 原曲與分軌 WAV（`とけちゃう、エメ.wav`、`0 Lead Vocals.wav` … `7 Other.wav`，共約 430 MB）
-- 輸出的影片（`mv/out/`）
+- the original song and the stems as WAV (`とけちゃう、エメ.wav`, `0 Lead Vocals.wav` … `7 Other.wav`, about 430 MB in total)
+- the rendered videos (`mv/out/`)
 
-**即時預覽和輸出影片不需要它們**：預覽用的是 `video/public/audio/song.m4a`，輸出影片時會自動改用 m4a（有 WAV 時用 WAV）。
-只有要**重新產生歌詞時間**（〈歌詞時間怎麼來的〉）才需要把原曲和分軌放回專案根目錄。
+**The live preview and video export do not need them**: the preview plays `video/public/audio/song.m4a`, and the export uses that m4a when the WAV is missing.
+You only need to put the song and stems back in the project root to **regenerate the lyric timing** (see [How the lyric timing is made](#how-the-lyric-timing-is-made)).
 
 ---
 
-## 完整歌詞
+## Lyrics
 
-時間為每句開始唱的時間（由主唱音軌強制對齊而得，見〈歌詞時間怎麼來的〉）。
+Times are when each line starts to be sung (taken from the lead-vocal stem by forced alignment; see [How the lyric timing is made](#how-the-lyric-timing-is-made)).
 
-### Intro（前奏）
+### Intro
 
 *music box, whispered vocals*
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 0:08.22 | はろー はろー エメだよ | Hello, hello, it's Eme |
 | 0:10.71 | 今日も 生きてる 偉いでしょ？ | Still alive today. Aren't I doing great? |
 
-### Verse 1（主歌 1）
+### Verse 1
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 0:15.23 | 東京の 小さな ワンルーム | A tiny one-room in Tokyo |
 | 0:18.83 | 今日の おやつは なあに？ | What's for snacks today? |
@@ -57,11 +58,11 @@
 | 0:35.98 | 空っぽの 瓶が ころころり | The empty bottle rolls away |
 | 0:39.14 | 手帳の 写真だけ 笑ってる | Only the photo in my disability handbook is smiling |
 
-### Pre-Chorus（預副歌）
+### Pre-Chorus
 
 *build up, vocal chops*
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 0:43.87 | 数えるのは もう やめた | I stopped counting a while ago |
 | 0:47.27 | 水色の お腹に 白い粒 | Little white beads in my light-blue belly |
@@ -71,9 +72,9 @@
 | 1:03.06 | 誰に 言い訳 してるの？ | Who am I making excuses to? |
 | 1:09.05 | 溶けて・溶けて・溶け 溶け 溶けて…… | Melting, melting, melt, melt, melting... |
 
-### Chorus（副歌）
+### Chorus
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 1:12.78 | ぷち・ぷち・ごくん 溶けちゃう | Pop, pop, gulp, I'm melting |
 | 1:16.36 | ふわ・ふわ・ひれから 溶けちゃう | Floaty, floaty, melting from my fins |
@@ -84,20 +85,20 @@
 | 1:34.39 | 水に 溶けたら 見えないの | Melt into water and no one can see me |
 | 1:37.56 | ばいばい 現実 また明日 | Bye-bye, reality, see you tomorrow |
 
-### Drop（間奏 Drop）
+### Drop
 
 *squishy wobble bass, glittery synth riff, vocal chops*
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 1:41.62 | （ぷち・ぷち・ごくん と・と・と・と・溶けちゃう） | (pop, pop, gulp, m-m-melting) |
 | 1:45.26 | （ぷち・ぷち・ごくん エ・エ・エ・エ・エメ・エメ） | (pop, pop, gulp, E-E-Eme) |
 | 1:48.86 | （ぷち・ぷち・ごくん と・と・と・と・溶けちゃう） | (pop, pop, gulp, m-m-melting) |
 | 1:52.47 | （ぷち・ぷち・ごくん エ・エ・エ・エ・エメ・エメ） | (pop, pop, gulp, E-E-Eme) |
 
-### Verse 2（主歌 2）
+### Verse 2
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 1:56.09 | 青い 体 ぽかぽか 痒い | My blue body is warm and itchy |
 | 1:59.62 | 世界が 薄い 膜の 向こう | The world is behind a thin film |
@@ -108,11 +109,11 @@
 | 2:16.35 | 怖く なるほど ひれが とろとろ | The scarier it gets, the more my fins drip |
 | 2:20.41 | どうせ 明日も この形 | I'll be this same shape tomorrow anyway |
 
-### Bridge（橋段）
+### Bridge
 
 *stutter, glitch breakdown*
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 2:24.48 | き・き・昨日も 同じ 天井 | Y-y-yesterday, the same ceiling |
 | 2:28.14 | あ・あ・明日も 同じ 天井 | T-t-tomorrow, the same ceiling |
@@ -123,9 +124,9 @@
 | 2:45.94 | 溶けて 固まって また 溶けて | Melt, harden, and melt again |
 | 2:49.72 | その 繰り返し それだけ | Over and over, that's all |
 
-### Final Chorus（最後副歌）
+### Final Chorus
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 2:53.82 | ぷち・ぷち・ごくん 溶けちゃう | Pop, pop, gulp, I'm melting |
 | 2:57.40 | ふわ・ふわ・ひれから 溶けちゃう | Floaty, floaty, melting from my fins |
@@ -136,9 +137,9 @@
 | 3:15.43 | 水に 溶けたら 見えないの | Melt into water and no one can see me |
 | 3:18.61 | ばいばい 現実 また明日 | Bye-bye, reality, see you tomorrow |
 
-### Chorus（副歌）
+### Chorus
 
-| 時間 | 歌詞 | English |
+| Time | Lyrics | English |
 |---|---|---|
 | 3:22.70 | ぷち・ぷち・ごくん と・と・と・と・溶けちゃう | (pop, pop, gulp, m-m-melting) |
 | 3:26.30 | ぷち・ぷち・ごくん エ・エ・エ・エ・エメ エメ | (pop, pop, gulp, E-E-Eme) |
@@ -151,7 +152,7 @@
 
 ---
 
-## 在瀏覽器即時觀看
+## Watch live in the browser
 
 ```powershell
 cd video
@@ -165,37 +166,37 @@ bun install
 bun run dev
 ```
 
-用 Chrome（或 Edge）開啟 <http://localhost:5177>。畫面載入後按 **空白鍵** 開始播放（瀏覽器規定要有一次按鍵才能出聲）。
+Open <http://localhost:5177> in Chrome (or Edge). Press **Space** to start playback (browsers need one key press before they allow sound).
 
-| 按鍵 | 功能 |
+| Key | Action |
 |---|---|
-| 空白鍵 | 播放／暫停 |
-| ← / → | 往前／往後 1 秒（按住 Shift 為 5 秒） |
-| , / . | 往前／往後 1 格（1/60 秒） |
-| [ / ] | 跳到上一段／下一段 |
-| h | 隱藏／顯示左下角的時間列 |
+| Space | play / pause |
+| ← / → | back / forward 1 s (hold Shift for 5 s) |
+| , / . | back / forward one frame (1/60 s) |
+| [ / ] | jump to the previous / next section |
+| h | hide / show the time bar in the bottom-left corner |
 
-網址參數：
+URL parameters:
 
-- `?t=74`：從第 74 秒開始（例：<http://localhost:5177/?t=74>）
-- `?scale=1`：畫布解析度倍率。預覽預設 `0.6667`（1280×720）；`1` 為 1920×1080，`1.3333` 為輸出用的 2560×1440
+- `?t=74` — start at 74 s (e.g. <http://localhost:5177/?t=74>)
+- `?scale=1` — canvas resolution factor. The preview defaults to `0.6667` (1280×720); `1` is 1920×1080 and `1.3333` is the 2560×1440 used for export
 
-預覽和輸出用的是**同一份程式**，每一格畫面只由「歌曲時間」決定（不使用亂數或系統時間），所以預覽看到的就是輸出的結果。
-改了 `video/src/` 裡的程式，存檔後瀏覽器會自動重新載入。
+The preview and the export run **the same code**, and each frame depends only on the song time (no random numbers, no wall clock), so what you see in the preview is exactly what gets exported.
+When you save a change in `video/src/`, the browser reloads automatically.
 
-> 在 Claude Code 桌面版裡也可以用 `.claude/launch.json` 的 `mv-preview` 直接開啟預覽。
+> In the Claude Code desktop app, the `mv-preview` entry in `.claude/launch.json` opens the preview directly.
 
-### 架成網頁（GitHub Pages）
+### Publish as a web page (GitHub Pages)
 
-`.github/workflows/pages.yml` 會在每次推送到 `main` 時自動 `vite build` 並發佈到 GitHub Pages。
-第一次使用時到 repo 的 **Settings → Pages → Build and deployment → Source** 選 **GitHub Actions**。
-發佈的網頁和本機預覽完全一樣（同樣的按鍵、`?t=`、`?scale=` 參數），在任何有 WebGL2 的瀏覽器都能看。
+`.github/workflows/pages.yml` runs `vite build` and publishes the result to GitHub Pages on every push to `main`.
+The first time, open the repository's **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**.
+The published page is identical to the local preview (same keys, same `?t=` and `?scale=` parameters) and runs in any browser with WebGL2.
 
 ---
 
-## 輸出影片
+## Export a video
 
-需要 Google Chrome（無頭模式算圖）和 ffmpeg。
+Needs Google Chrome (headless rendering) and ffmpeg.
 
 ```powershell
 cd video
@@ -205,39 +206,39 @@ cd video
 bun run render -- --out ../mv/out/tokechau_eme.mp4
 ```
 
-流程：先 `vite build`，再開 4 個無頭 Chrome 分段算圖，每一格的 RGBA 透過 WebSocket 送給 ffmpeg 編碼，最後把分段接起來並混入原始 WAV 音訊。
-RTX 5060 上全片約 4 分鐘。
+How it works: `vite build` first, then 4 headless Chrome instances each render a range of frames; every frame's RGBA pixels go over a WebSocket to ffmpeg, and at the end the segments are joined and muxed with the song audio.
+The full video takes about 4 minutes on an RTX 5060.
 
-| 參數 | 說明 |
+| Option | Meaning |
 |---|---|
-| `--out 路徑` | 輸出檔（預設 `../mv/out/tokechau_eme.mp4`） |
-| `--from 70 --to 80` | 只輸出 70–80 秒 |
-| `--stills 5,30.2,75` | 只輸出這幾個時間點的 PNG 截圖到 `video/out/stills/` |
-| `--workers 4` | 同時開幾個 Chrome |
-| `--cq 24` | NVENC 畫質（越小越好、越大檔） |
-| `--cpu --crf 20` | 不用顯卡，改用 libx264 編碼 |
-| `--no-build` | 跳過 `vite build` |
+| `--out path` | output file (default `../mv/out/tokechau_eme.mp4`) |
+| `--from 70 --to 80` | render only 70–80 s |
+| `--stills 5,30.2,75` | render PNG stills at these times into `video/out/stills/` |
+| `--workers 4` | number of Chrome instances |
+| `--cq 24` | NVENC quality (lower = better and larger) |
+| `--cpu --crf 20` | encode with libx264 instead of the GPU |
+| `--no-build` | skip `vite build` |
 
-縮成其他解析度（從 1440p 版本縮小，畫質比直接算低解析度好）：
+Other resolutions (scaling down the 1440p export looks better than rendering at a lower resolution):
 
 ```powershell
 ffmpeg -i ../mv/out/tokechau_eme.mp4 -vf "scale=1920:1080:flags=lanczos" -c:v h264_nvenc -preset p7 -tune hq -multipass fullres -rc vbr -cq 22 -b:v 0 -maxrate 15M -bufsize 30M -spatial-aq 1 -temporal-aq 1 -pix_fmt yuv420p -c:a aac -b:a 192k -movflags +faststart ../mv/out/tokechau_eme_1080p.mp4
 ```
 
-（`-maxrate 15M` 讓 1080p 全片約 470 MB；720p 用 `scale=1280:720` 與 `-maxrate 4M` 約 125 MB。沒有 NVIDIA 顯卡就把 `h264_nvenc …` 換成 `libx264 -preset slow -crf 20`。）
+(`-maxrate 15M` gives about 470 MB for 1080p; for 720p use `scale=1280:720` with `-maxrate 4M`, about 125 MB. Without an NVIDIA GPU, replace `h264_nvenc …` with `libx264 -preset slow -crf 20`.)
 
 ---
 
-## 環境需求
+## Requirements
 
-| 工具 | 用途 | 本機版本 |
+| Tool | Used for | Version used |
 |---|---|---|
-| [Bun](https://bun.sh) | 安裝套件、預覽伺服器、輸出腳本 | 1.4.4 |
-| Google Chrome | 輸出影片時的無頭算圖 | 157 |
-| ffmpeg（需含 `h264_nvenc`，或改用 `--cpu`） | 編碼 | 9.0.2 |
-| Python 3.13 | 只有要**重新產生歌詞時間**才需要 | 3.13.17 |
+| [Bun](https://bun.sh) | packages, preview server, export script | 1.4.4 |
+| Google Chrome | headless rendering for video export | 157 |
+| ffmpeg (with `h264_nvenc`, or use `--cpu`) | encoding | 9.0.2 |
+| Python 3.13 | only to **regenerate the lyric timing** | 3.13.17 |
 
-Python 套件（在專案根目錄建立 `.venv`）：
+Python packages (in a `.venv` at the project root):
 
 ```powershell
 py -3.13 -m venv .venv
@@ -251,32 +252,32 @@ py -3.13 -m venv .venv
 .venv\Scripts\python.exe -m pip install -r video/analysis/requirements.txt
 ```
 
-執行 Python 腳本時請加 `-X utf8`（Windows 預設編碼會讀錯日文）。
+Run the Python scripts with `-X utf8` (on Windows the default encoding misreads Japanese).
 
 ---
 
-## 歌詞時間怎麼來的
+## How the lyric timing is made
 
-只改畫面不需要這一段；**改了 `lyrics.txt` 的歌詞**才要重跑。
+You don't need this to change the visuals; only when you **edit the lyrics in `lyrics.txt`**.
 
-1. **歌詞**：`lyrics.txt`（日文，用 `[段落]` 分段，每行可帶時間戳，但最後會被覆寫）。
-   **英文**：`video/analysis/translation_en.txt`，一行對應一句唱的歌詞（不含段落標籤）。
-2. **語音辨識**（只需跑一次）：faster-whisper large-v3 聽寫主唱音軌，得到每個字的大概時間 → `asr_lead.json`
+1. **Lyrics:** `lyrics.txt` (Japanese, split by `[Section]` tags; a line may end with a timestamp, which gets overwritten).
+   **English:** `video/analysis/translation_en.txt`, one line per sung line (section tags excluded).
+2. **Speech recognition** (once): faster-whisper large-v3 transcribes the lead-vocal stem, giving rough word times → `asr_lead.json`
    ```powershell
    .venv\Scripts\python.exe -X utf8 video/analysis/asr_lead.py
    ```
-3. **第一次對齊**：把每個音節對到主唱 MIDI 的音符（`MIDI/0 Lead Vocals.mid`），產生歌詞資料
+3. **First alignment:** every mora is matched to a note of the lead-vocal MIDI (`MIDI/0 Lead Vocals.mid`), then the lyric data is built
    ```powershell
    .venv\Scripts\python.exe -X utf8 video/analysis/align_audio.py --no-fa --write-txt
    ```
    ```powershell
    .venv\Scripts\python.exe -X utf8 video/analysis/build_data.py
    ```
-4. **強制對齊**：用 Meta 的 MMS 多語言對齊模型（torchaudio），把羅馬拼音化的每個音節對到主唱音軌實際出聲的位置 → `fa_times.json`（第一次會下載約 1.2 GB 模型）
+4. **Forced alignment:** Meta's multilingual MMS aligner (torchaudio) places each romanised mora on the point where the lead vocal actually sings it → `fa_times.json` (downloads a 1.2 GB model the first time)
    ```powershell
    .venv\Scripts\python.exe -X utf8 video/analysis/force_align.py
    ```
-5. **最終對齊**：以強制對齊為主、MIDI 為輔，再套用手動修正，寫回 `lyrics.txt` 的時間戳並產生 `video/public/data/lyrics.json`
+5. **Final alignment:** forced alignment first, MIDI as a fallback, plus hand corrections; writes the timestamps back into `lyrics.txt` and produces `video/public/data/lyrics.json`
    ```powershell
    .venv\Scripts\python.exe -X utf8 video/analysis/align_audio.py --write-txt
    ```
@@ -284,57 +285,57 @@ py -3.13 -m venv .venv
    .venv\Scripts\python.exe -X utf8 video/analysis/build_data.py
    ```
 
-檢查工具：
+Checking tools:
 
-- `sync_check.py`：每句歌詞和語音辨識結果的時間差、聽到的內容
-- `probe.py 82.5 86.8`：列出該時段主唱的音量、音高、起音點，以及目前每個音節的時間，用來逐句核對
+- `sync_check.py` — per line: time difference from the speech recognition and what it heard
+- `probe.py 82.5 86.8` — the lead vocal's loudness, pitch and onsets over that range next to the current mora times, for checking a line by eye
 
-`align_audio.py` 裡有幾張手動修正表（`MANUAL`、`MANUAL_MORA`、強制對齊的採用規則），記錄了逐句聽過、看過音軌後的修正，改歌詞時如果某句的音節數變了，對應的修正要一起更新。
+`align_audio.py` holds a few hand-correction tables (`MANUAL`, `MANUAL_MORA` and the rules for accepting forced-alignment times), recording fixes made after listening to and inspecting each line. If you change a line so that its number of morae changes, update its correction too.
 
-每句的**結束時間**取主唱音軌真正安靜下來的時間（含拉長的尾音），所以字不會在歌聲結束前消失。
+Each line's **end time** is when the lead vocal actually goes quiet (held vowels included), so words never disappear before they have been sung out.
 
-`audio.json`（拍點、段落、鼓點、各音軌音量）由 `build_data.py` 從 `mv/data/song.json` 的拍點表和 `MIDI/`、各分軌 WAV 產生。
+`audio.json` (beats, sections, drum hits, per-stem loudness) is built by `build_data.py` from the beat map in `mv/data/song.json`, `MIDI/` and the stem WAVs.
 
 ---
 
-## 資料夾結構
+## Folder layout
 
 ```
-lyrics.txt                    歌詞（日文，含段落與時間戳）
-とけちゃう、エメ.wav            原曲
-0 Lead Vocals.wav …           分軌（主唱、和聲、鼓、貝斯…）
-MIDI/                         各分軌的 MIDI
-mv/out/                       輸出的影片
-mv/NOTES.md                   製作紀錄（每一版改了什麼、為什麼）
+lyrics.txt                    lyrics (Japanese, sections and timestamps)
+とけちゃう、エメ.wav            the song (not in the repo)
+0 Lead Vocals.wav …           stems: lead vocal, backing vocals, drums, bass… (not in the repo)
+MIDI/                         MIDI for each stem
+mv/out/                       rendered videos (not in the repo)
+mv/NOTES.md                   production log: what changed in each version and why
 video/
-  index.html, vite.config.ts  預覽頁面
-  src/main.ts                 載入資料與字型；預覽模式／輸出模式
-  src/timeline.ts             各段落使用哪個場景、在哪裡切換
-  src/engine/                 引擎
-    engine.ts                 每一格：場景畫字 → 背景著色器 → 合成 → 光暈 → 最終調色
-    shaders.ts                GLSL：背景（夜晚房間、水中、肥皂膜、磁磚、天花板、斜紋）、融化／晃動／故障、後製
-    type.ts                   文字排版、字幕、水滴／藥片／泡泡等圖形
-    lyrics.ts, audio.ts       歌詞與音訊資料的讀取（逐字時間、拍點、音量）
-    palette.ts                配色（天藍為主；紫色只用於藥名；粉紅、黃色各只出現一次）
-  src/scenes/                 每段歌的動態歌詞場景（見下表）
-  scripts/render.ts           輸出影片
-  scripts/sheets.sh           輸出截圖拼圖，用來檢查
-  public/data/                lyrics.json、audio.json
-  public/audio/song.m4a       預覽用音訊
-  analysis/                   產生歌詞時間的 Python 腳本
+  index.html, vite.config.ts  preview page
+  src/main.ts                 loads data and fonts; preview mode / export mode
+  src/timeline.ts             which scene plays in which section, and where the cuts are
+  src/engine/                 the engine
+    engine.ts                 per frame: scene draws text → background shader → composite → bloom → final grade
+    shaders.ts                GLSL: backgrounds (night room, water, soap film, tiles, ceiling, stripes), melt / wobble / glitch, post
+    type.ts                   text layout, subtitles, drop / tablet / bubble shapes
+    lyrics.ts, audio.ts       lyric and audio data (per-character times, beats, loudness)
+    palette.ts                colours (sky blue throughout; lilac only for the medicine names; pink and yellow once each)
+  src/scenes/                 one kinetic-lyric scene per section (see the table below)
+  scripts/render.ts           video export
+  scripts/sheets.sh           renders a contact sheet of stills for checking
+  public/data/                lyrics.json, audio.json
+  public/audio/song.m4a       audio for the preview
+  analysis/                   Python scripts that make the lyric timing
 ```
 
-## 各段的畫面
+## The sections
 
-| 段落 | 場景檔 | 動態歌詞的做法 |
+| Section | Scene file | How the lyrics move |
 |---|---|---|
-| 前奏 | `intro.ts` | 黑暗中的音樂盒音點；標題逐字落下後融化；氣聲讓標題閃一下；耳語歌詞從模糊中浮現 |
-| 主歌 1 | `verse1.ts` | 小房間框；每句唱完後字掉到地上堆成雜物；ブロン 是貼紫標籤的藥瓶、メジコン 是紫色紙盒；ぷち 時藥板彈出藥丸；瓶子滾動 |
-| 預副歌 | `prechorus.ts` | 直書；數字計數器停在「やめた」；藥片變星星；黃色水滴落下；鏡像字翻正；「た・た・た」連打時抖動；「溶けて」五段越來越大並融化 |
-| 副歌 | `chorus.ts` | 天藍水中；ぷち・ごくん 重擊；ふわ 往上漂；とろとろ 拉長下垂；浮在水面的倒影；變透明；螺旋；溶成泡泡；被浪捲走 |
-| Drop | `drop.ts` | 斜紋與滿版文字壁紙；每個人聲切片一張大字卡；ぷち・ごくん 彈出藥丸；最後整個融化 |
-| 主歌 2 | `verse2.ts` | 肥皂膜後的模糊文字；しあわせ 在泡泡裡然後破掉；退藥後的浴室磁磚、重影、字倒在地上、融成一灘 |
-| 橋段 | `bridge.ts` | 天花板；結巴故障；同一個天井；繞著畫面邊緣打轉的字；年金日的月曆；溶解又凝固；無限滾動 |
-| 尾聲 | `outro.ts` | 音樂盒回來；字像眼睛一樣閉上；水滴變成字；片尾標題與字幕 |
+| Intro | `intro.ts` | music-box dots in the dark; the title drops in letter by letter, then melts; a whisper makes the title flash; whispered lines surface out of blur |
+| Verse 1 | `verse1.ts` | a tiny room; each line falls to the floor once sung and piles up like clutter; ブロン is a bottle with a purple label, メジコン a purple box; ぷち pops tablets out of a blister pack; the bottle rolls away |
+| Pre-Chorus | `prechorus.ts` | vertical writing; a counter stops at やめた; tablets turn into stars; a yellow drop falls; mirrored words turn round; the line shakes through the た・た・た chops; 溶けて five times, bigger and melting |
+| Chorus | `chorus.ts` | sky-blue water; ぷち and ごくん slam in; ふわ floats up; とろとろ stretches and sags; the line floats on the surface with a reflection; turns see-through; a spiral; dissolves into bubbles; is carried off by a wave |
+| Drop | `drop.ts` | stripes and a wallpaper of the word; one big card per vocal chop; ぷち and ごくん pop tablets; everything melts away at the end |
+| Verse 2 | `verse2.ts` | blurred words behind a soap film; 幸せ inside a bubble that bursts; the comedown: bathroom tiles, double vision, words toppling onto the floor and melting into a puddle |
+| Bridge | `bridge.ts` | the ceiling; stutter glitches; the same 天井 every day; words circling the edge of the frame; a calendar with pension day; melt and set again; an endless roll |
+| Outro | `outro.ts` | the music box returns; words close like eyes; drops become words; end title and credits |
 
-字型（全部來自 [Fontsource](https://fontsource.org)，SIL Open Font License）：Dela Gothic One、Hachi Maru Pop、M PLUS 1、DotGothic16、Klee One、Shippori Mincho B1、Zen Maru Gothic、IBM Plex Mono。
+Fonts (all from [Fontsource](https://fontsource.org), SIL Open Font License): Dela Gothic One, Hachi Maru Pop, M PLUS 1, DotGothic16, Klee One, Shippori Mincho B1, Zen Maru Gothic, IBM Plex Mono.
