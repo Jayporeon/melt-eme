@@ -1,0 +1,28 @@
+# --- too large for git: rendered videos, original audio and stems ---
+mv/out/
+*.mp4
+*.wav
+*.npz
+
+# --- regenerated / installed locally ---
+.venv/
+video/node_modules/
+video/dist/
+video/out/
+__pycache__/
+
+# --- working files of the first (v1) version ---
+mv/work/
+mv/review/
+mv/clips/
+mv/keyframes/
+mv/archive/
+mv/scripts/
+mv/data/audio_feats.npz
+mv/data/cuts_cache.json
+mv/data/edl.json
+
+# --- editor / OS ---
+.DS_Store
+Thumbs.db
+*.log

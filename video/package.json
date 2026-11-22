@@ -1,0 +1,24 @@
+{
+  "name": "tokechau-eme-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5177",
+    "build": "vite build",
+    "render": "bun scripts/render.ts"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  },
+  "dependencies": {
+    "@fontsource-variable/m-plus-1": "^5.3.1",
+    "@fontsource/dela-gothic-one": "^5.3.0",
+    "@fontsource/dotgothic16": "^5.3.1",
+    "@fontsource/hachi-maru-pop": "^5.3.0",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/klee-one": "^5.3.1",
+    "@fontsource/shippori-mincho-b1": "^5.3.0",
+    "@fontsource/zen-maru-gothic": "^5.3.1"
+  }
+}

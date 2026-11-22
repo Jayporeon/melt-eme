@@ -1,0 +1,10 @@
+# Python packages for the timing pipeline (video/analysis). Python 3.13.
+# torch / torchaudio: install the CPU builds from the PyTorch index, see README.md.
+numpy==2.5.5
+scipy==1.18.1
+soundfile==0.14.0
+librosa==1.0.1
+pykakasi==2.3.0
+faster-whisper==1.2.1
+torch==2.7.1
+torchaudio==2.7.1
