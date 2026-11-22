@@ -6,6 +6,7 @@
 //   bun scripts/render.ts --from 70 --to 80       a range (seconds)
 //   bun scripts/render.ts --stills 5,30.2,75      PNG stills -> out/stills/
 //   options: --workers 3  --out path  --cq 24 (NVENC) | --cpu --crf 20 (x264)  --no-build
+//   env: CHROME=path/to/chrome when Chrome is not in its usual place
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
@@ -23,7 +24,23 @@ const W = 2560,
 // the original WAV is not in the git repo; fall back to the preview m4a when it is missing
 const WAV_PATH = resolve(ROOT, '..', 'とけちゃう、エメ.wav');
 const WAV = existsSync(WAV_PATH) ? WAV_PATH : join(ROOT, 'public/audio/song.m4a');
-const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+// Chrome: $CHROME, else the usual install path for this OS. Only tested on Windows (ANGLE on Direct3D 11).
+const WIN = process.platform === 'win32';
+const CHROME =
+  process.env.CHROME ??
+  [
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/usr/bin/google-chrome',
+    '/usr/bin/google-chrome-stable',
+    '/usr/bin/chromium',
+  ].find((p) => existsSync(p));
+if (!CHROME || !existsSync(CHROME)) {
+  console.error('Google Chrome not found. Set CHROME to the path of the Chrome executable.');
+  process.exit(1);
+}
+// stop if no frame arrives for this long (a Chrome worker hung, e.g. lost its GPU)
+const STALL_S = 120;
 const PORT = 5199;
 const audio = JSON.parse(readFileSync(join(ROOT, 'public/data/audio.json'), 'utf8'));
 const DUR: number = audio.duration;
@@ -42,7 +59,7 @@ const tmp = join(ROOT, 'out/tmp');
 mkdirSync(tmp, { recursive: true });
 
 if (!has('no-build')) {
-  const b = Bun.spawnSync(['bunx', 'vite', 'build', '--logLevel', 'warn'], { cwd: ROOT, stdout: 'inherit', stderr: 'inherit' });
+  const b = Bun.spawnSync(['bun', 'run', 'build', '--logLevel', 'warn'], { cwd: ROOT, stdout: 'inherit', stderr: 'inherit' });
   if (b.exitCode !== 0) process.exit(1);
 }
 
@@ -100,10 +117,7 @@ const server = Bun.serve({
     message(ws: any, msg) {
       const k = ws.data.k;
       if (typeof msg === 'string') {
-        if (msg.startsWith('error:')) {
-          console.error(`worker ${k}: ${msg}`);
-          process.exit(1);
-        }
+        if (msg.startsWith('error:')) fail(`worker ${k}: ${msg}`);
         if (msg === 'done') {
           ws.data.chain = ws.data.chain.then(async () => {
             await procs[k].stdin.end();
@@ -125,18 +139,43 @@ const server = Bun.serve({
   },
 });
 
+// on any failure: stop every Chrome and ffmpeg instead of waiting forever
+function fail(msg: string): never {
+  console.error(msg);
+  for (const c of chromes) c.kill();
+  for (const p of procs) p.kill();
+  process.exit(1);
+}
+
 const chromes = jobs.map((_, k) => {
   const prof = join(tmp, `chrome_${k}`);
   return Bun.spawn(
-    [CHROME, '--headless=new', '--use-angle=d3d11', '--ignore-gpu-blocklist', '--enable-gpu-rasterization',
+    [CHROME, '--headless=new', ...(WIN ? ['--use-angle=d3d11'] : []), '--ignore-gpu-blocklist', '--enable-gpu-rasterization',
       '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows',
       '--no-first-run', '--no-default-browser-check', '--mute-audio', `--user-data-dir=${prof}`, '--window-size=1280,800',
       `http://localhost:${PORT}/index.html?render=1&job=${k}`],
     { stdout: 'ignore', stderr: 'ignore' },
   );
 });
+// a Chrome that exits before its frames are done has crashed
+chromes.forEach((c, k) =>
+  c.exited.then((code) => {
+    if (!done[k]) fail(`worker ${k}: Chrome exited (code ${code}) after ${count[k]}/${jobs[k].length} frames`);
+  }),
+);
 
 const total = allFrames.length;
+let lastN = -1;
+let lastProgress = performance.now();
+const watchdog = setInterval(() => {
+  const n = count.reduce((a, b) => a + b, 0);
+  if (n !== lastN) {
+    lastN = n;
+    lastProgress = performance.now();
+  } else if (!done.every(Boolean) && performance.now() - lastProgress > STALL_S * 1000) {
+    fail(`no frame for ${STALL_S} s (frames per worker: ${count.join(', ')}); a Chrome worker seems stuck`);
+  }
+}, 5000);
 const tick = setInterval(() => {
   const n = count.reduce((a, b) => a + b, 0);
   const el = (performance.now() - t0) / 1000;
@@ -147,6 +186,7 @@ const tick = setInterval(() => {
 
 await allDone;
 clearInterval(tick);
+clearInterval(watchdog);
 for (const c of chromes) c.kill();
 server.stop(true);
 

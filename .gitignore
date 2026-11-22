@@ -29,3 +29,6 @@ Thumbs.db
 
 # --- private production log ---
 mv/NOTES.md
+
+# --- full fonts downloaded by scripts/fonts.ts ---
+video/.fontcache/

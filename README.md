@@ -140,7 +140,7 @@ Times are when each line starts to be sung (taken from the lead-vocal stem by fo
 | 3:15.43 | 水に 溶けたら 見えないの | Melt into water and no one can see me |
 | 3:18.61 | ばいばい 現実 また明日 | Bye-bye, reality, see you tomorrow |
 
-### Chorus
+### Final Drop
 
 | Time | Lyrics | English |
 |---|---|---|
@@ -148,6 +148,11 @@ Times are when each line starts to be sung (taken from the lead-vocal stem by fo
 | 3:26.30 | ぷち・ぷち・ごくん エ・エ・エ・エ・エメ エメ | (pop, pop, gulp, E-E-Eme) |
 | 3:29.80 | ぷち・ぷち・ごくん と・と・と・と・溶けちゃう | (pop, pop, gulp, m-m-melting) |
 | 3:33.52 | ま・ま・ま・ま・ま・ま・ま・ま・また明日 | (s-s-s-s-see you tomorrow) |
+
+### Outro
+
+| Time | Lyrics | English |
+|---|---|---|
 | 3:37.56 | おやすみ おやすみ エメ | Good night, good night, Eme |
 | 3:41.17 | 明日 形が あったら | If I still have a shape tomorrow |
 | 3:44.76 | また ぷちぷち しようかな | Maybe I'll pop a few again |
@@ -171,7 +176,7 @@ bun run dev
 
 Open <http://localhost:5177> in a browser. Click or tap the picture (or press **Space**) to start playback (browsers need one click or key press before they allow sound).
 
-**On a phone or tablet:** tap the picture to play or pause. A control bar (play / pause, time, seek bar, fullscreen) appears at the bottom whenever you tap, and hides itself after a few seconds while playing. Phones render at 960×540 to keep playback smooth. Turn the phone sideways, or use the fullscreen button, for a bigger picture.
+**On a phone or tablet:** tap the picture to play or pause. A control bar (play / pause, time, seek bar, English subtitles on / off, fullscreen) appears at the bottom whenever you tap, and hides itself after a few seconds while playing. Phones render at 960×540 to keep playback smooth. Turn the phone sideways, or use the fullscreen button, for a bigger picture. Play, pause and seek also work from the lock screen, the notification and headphone buttons.
 
 **On a computer:** click the picture or use the control bar, or the keyboard:
 
@@ -182,11 +187,13 @@ Open <http://localhost:5177> in a browser. Click or tap the picture (or press **
 | , / . | back / forward one frame (1/60 s) |
 | [ / ] | jump to the previous / next section |
 | f | fullscreen |
+| s | English subtitles on / off (also the **EN** button in the control bar) |
 | h | hide / show the debug line (time, beat, scene) in the top-left corner |
 
 URL parameters:
 
 - `?t=74` — start at 74 s (e.g. <http://localhost:5177/?t=74>)
+- `?sub=0` — start with the English subtitles off
 - `?scale=1` — canvas resolution factor. The preview defaults to `0.6667` (1280×720) on a computer and `0.5` (960×540) on a phone; `1` is 1920×1080 and `1.3333` is the 2560×1440 used for export
 
 The preview and the export run **the same code**, and each frame depends only on the song time (no random numbers, no wall clock), so what you see in the preview is exactly what gets exported.
@@ -204,7 +211,8 @@ The published page is identical to the local preview (same keys, same `?t=` and 
 
 ## Export a video
 
-Needs Google Chrome (headless rendering) and ffmpeg.
+Needs Google Chrome (headless rendering) and ffmpeg. Only tested on Windows; on macOS / Linux it looks for Chrome in the usual places, or set the `CHROME` environment variable to the Chrome executable.
+If a Chrome worker crashes, or no frame arrives for 2 minutes, the export stops with an error instead of waiting forever.
 
 ```powershell
 cd video
@@ -214,7 +222,7 @@ cd video
 bun run render -- --out ../mv/out/tokechau_eme.mp4
 ```
 
-How it works: `vite build` first, then 4 headless Chrome instances each render a range of frames; every frame's RGBA pixels go over a WebSocket to ffmpeg, and at the end the segments are joined and muxed with the song audio.
+How it works: `vite build` first, then 3 headless Chrome instances each render a range of frames; every frame's RGBA pixels go over a WebSocket to ffmpeg, and at the end the segments are joined and muxed with the song audio.
 The full video takes about 4 minutes on an RTX 5060.
 
 | Option | Meaning |
@@ -222,7 +230,7 @@ The full video takes about 4 minutes on an RTX 5060.
 | `--out path` | output file (default `../mv/out/tokechau_eme.mp4`) |
 | `--from 70 --to 80` | render only 70–80 s |
 | `--stills 5,30.2,75` | render PNG stills at these times into `video/out/stills/` |
-| `--workers 4` | number of Chrome instances |
+| `--workers 3` | number of Chrome instances (default 3) |
 | `--cq 24` | NVENC quality (lower = better and larger) |
 | `--cpu --crf 20` | encode with libx264 instead of the GPU |
 | `--no-build` | skip `vite build` |
@@ -292,6 +300,7 @@ You don't need this to change the visuals; only when you **edit the lyrics in `l
    ```powershell
    .venv\Scripts\python.exe -X utf8 video/analysis/build_data.py
    ```
+6. **Fonts:** if the new lyrics or translation use characters that were not there before, cut the fonts again (see [Fonts](#fonts)). `bun run build` stops with a list of the missing characters if you forget.
 
 Checking tools:
 
@@ -302,7 +311,8 @@ Checking tools:
 
 Each line's **end time** is when the lead vocal actually goes quiet (held vowels included), so words never disappear before they have been sung out.
 
-`audio.json` (beats, sections, drum hits, per-stem loudness) is built by `build_data.py` from the beat map in `mv/data/song.json`, `MIDI/` and the stem WAVs.
+`audio.json` (beats, sections, drum hits, per-stem loudness) is built by `build_data.py` from the hand-checked beat map in `video/analysis/song.json`, `MIDI/` and the stem WAVs.
+`video/analysis/lyrics_v1.json` is the line timing of the first version of the video; `build_data.py` falls back to it when a line in `lyrics.txt` has no timestamp.
 
 ---
 
@@ -325,7 +335,9 @@ video/
     lyrics.ts, audio.ts       lyric and audio data (per-character times, beats, loudness)
     palette.ts                colours (sky blue throughout; lilac only for the medicine names; pink and yellow once each)
   src/scenes/                 one kinetic-lyric scene per section (see the table below)
+  src/fonts/                  the fonts, cut down to the characters the video draws (generated)
   scripts/render.ts           video export
+  scripts/fonts.ts            makes src/fonts/
   scripts/sheets.sh           renders a contact sheet of stills for checking
   public/data/                lyrics.json, audio.json
   public/audio/song.m4a       audio for the preview
@@ -345,6 +357,29 @@ video/
 | Bridge | `bridge.ts` | the ceiling; stutter glitches; the same 天井 every day; words circling the edge of the frame; a calendar with pension day; melt and set again; an endless roll |
 | Outro | `outro.ts` | the music box returns; words close like eyes; drops become words; end title, credits and the character credit |
 
-Fonts (all from [Fontsource](https://fontsource.org), SIL Open Font License): Dela Gothic One, Hachi Maru Pop, M PLUS 1, DotGothic16, Klee One, Shippori Mincho B1, Zen Maru Gothic, IBM Plex Mono.
+## Fonts
 
-# エメ originally created by ぴょんこ (X: @Pyon_ko_)
+Dela Gothic One, Hachi Maru Pop, M PLUS 1, DotGothic16, Klee One, Shippori Mincho B1, Zen Maru Gothic and IBM Plex Mono, all from [Google Fonts](https://github.com/google/fonts) under the SIL Open Font License.
+
+The video only ever draws its own lyrics, translation and credits, so each font is cut down to just those characters (about 320): the web page loads 12 font files, about 920 kB in total, instead of hundreds of slices of the full fonts.
+The cut fonts are in `video/src/fonts/` (with `chars.txt`, the characters they cover). After changing any text (lyrics, translation, credits, text in `video/src/`), make them again:
+
+```powershell
+cd video
+```
+
+```powershell
+bun run fonts
+```
+
+The first run downloads the full fonts (about 85 MB) into `video/.fontcache/`. `bun run build` (and so the GitHub Pages build and the video export) first checks that every character is covered, and stops with the missing ones if not.
+
+## License
+
+The source code (`video/src`, `video/scripts`, `video/analysis`, build and workflow files) is under the [MIT License](LICENSE).
+
+It does **not** cover:
+
+- **Eme (エメ)**, a Vaporeon fan character created by ぴょんこ ([X: @pyon_ko_](https://x.com/pyon_ko_)). Vaporeon and Pokémon are trademarks of Nintendo / Creatures Inc. / GAME FREAK inc.
+- the song, the lyrics and their translation, the audio (`video/public/audio/`), the MIDI files and the rendered videos: all rights reserved
+- the fonts in `video/src/fonts/`: SIL Open Font License 1.1 (the licence text is kept inside each font file)

@@ -92,6 +92,8 @@ export class Engine {
   bloomU: Target[] = [];
   lastPost: Post = DEFAULT_POST;
   lastScene = '';
+  /** English subtitles on / off (the preview's EN button) */
+  showSub = true;
   constructor(
     public canvas: HTMLCanvasElement,
     public scale: number, // output px per logical px
@@ -181,7 +183,7 @@ export class Engine {
     }
     const post: Post = { ...DEFAULT_POST, ...e.fn(f, this.ix, this.sx) };
     this.lastPost = post;
-    if (post.sub !== false) {
+    if (post.sub !== false && this.showSub) {
       const s = this.subLine(t);
       if (s) subtitle(this.sx, s.l, s.a, typeof post.sub === 'number' ? post.sub : 1012);
     }

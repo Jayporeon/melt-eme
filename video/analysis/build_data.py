@@ -2,10 +2,10 @@
 
 Run from the repo root:  .venv/Scripts/python.exe -X utf8 video/analysis/build_data.py
 
-audio.json  beats / downbeats / sections (from the hand-checked beat map in mv/data/song.json),
+audio.json  beats / downbeats / sections (from the hand-checked beat map in analysis/song.json),
             drum onsets from MIDI/2 Drums.mid (36 kick, 38 snare, 42 hat), note lists for the lead
             vocal, music box (keyboard), synth and bass, and 100 fps loudness envelopes per stem.
-lyrics.json one entry per sung line. Line windows come from the earlier alignment (mv/data/lyrics.json,
+lyrics.json one entry per sung line. Line windows come from the earlier alignment (analysis/lyrics_v1.json,
             hand-fixed intro/outro). Inside each window every mora gets its own span from the lead
             vocal MIDI notes, so words light up mora by mora. English from translation_en.txt.
 """
@@ -141,7 +141,7 @@ def band_env(path, lo, hi, fps=100):
 
 
 def build_audio():
-    song = json.load(open(os.path.join(ROOT, "mv", "data", "song.json"), encoding="utf8"))
+    song = json.load(open(os.path.join(HERE, "song.json"), encoding="utf8"))
     beats = song["beats"]
     downbeats = beats[::4]
     sections = [{"name": s["name"], "start": s["start"], "end": s["end"]} for s in song["sections"]]
@@ -194,7 +194,7 @@ def parse_lyrics_txt():
 
 
 def build_lyrics(audio):
-    old = json.load(open(os.path.join(ROOT, "mv", "data", "lyrics.json"), encoding="utf8"))
+    old = json.load(open(os.path.join(HERE, "lyrics_v1.json"), encoding="utf8"))
     old_by_text = {}
     for L in old:
         old_by_text.setdefault(L["text"], []).append(L)

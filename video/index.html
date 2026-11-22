@@ -5,6 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#000000" />
 <title>とけちゃう、エメ</title>
+<meta name="description" content="A kinetic-lyric music video computed entirely in code, rendered live in your browser. コードだけで描くキネティック・リリックMV。" />
+<meta property="og:type" content="video.other" />
+<meta property="og:title" content="とけちゃう、エメ (Tokechau, Eme)" />
+<meta property="og:description" content="A kinetic-lyric music video computed entirely in code, rendered live in your browser. コードだけで描くキネティック・リリックMV。" />
+<meta property="og:url" content="https://jayporeon.github.io/melt-eme/" />
+<meta property="og:image" content="https://jayporeon.github.io/melt-eme/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="675" />
+<meta property="og:image:alt" content="Lyrics 水に 溶けたら 見えないの floating in blue water with bubbles" />
+<meta name="twitter:card" content="summary_large_image" />
 <style>
   html, body { margin: 0; height: 100%; background: #000; overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   body { font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; color: #e8f6ff; user-select: none; -webkit-user-select: none; }
@@ -34,6 +44,10 @@
   #bar button:active { background: rgba(92, 203, 255, .18); }
   #bar svg { width: 22px; height: 22px; }
   #time { flex: none; font: 12px ui-monospace, monospace; color: #bfeaff; min-width: 86px; text-align: center; }
+  #cc { font: 600 12px ui-monospace, monospace; letter-spacing: .04em; }
+  #cc span { border: 1.5px solid currentColor; border-radius: 4px; padding: 2px 4px; }
+  #cc[aria-pressed="false"] { opacity: .45; }
+  #cc[aria-pressed="false"] span { text-decoration: line-through; }
   #seek { flex: 1; min-width: 60px; accent-color: #5ccbff; height: 28px; cursor: pointer; }
 
   .idle #bar, .idle #big, .idle #hint { opacity: 0; pointer-events: none; }
@@ -64,6 +78,7 @@
   </button>
   <span id="time">0:00 / 4:06</span>
   <input id="seek" type="range" min="0" max="246.4" step="0.01" value="0" aria-label="Seek" />
+  <button id="cc" aria-label="English subtitles" aria-pressed="true" title="English subtitles (s)"><span>EN</span></button>
   <button id="fs" aria-label="Fullscreen">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   </button>
