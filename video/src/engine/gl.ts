@@ -17,6 +17,7 @@ void main(){ vUv = p*0.5+0.5; gl_Position = vec4(p,0.,1.); }`;
 export class GL {
   gl: WebGL2RenderingContext;
   private buf: WebGLBuffer;
+  float = true;
   private progs = new Map<string, { p: WebGLProgram; loc: Map<string, WebGLUniformLocation | null> }>();
   constructor(public canvas: HTMLCanvasElement) {
     const gl = canvas.getContext('webgl2', {
@@ -26,8 +27,9 @@ export class GL {
       preserveDrawingBuffer: true,
       powerPreference: 'high-performance',
     });
-    if (!gl) throw new Error('no webgl2');
-    if (!gl.getExtension('EXT_color_buffer_float')) throw new Error('no float targets');
+    if (!gl) throw new Error('This browser does not support WebGL2.');
+    // half-float render targets give smoother bloom; some phones can't render to them, so fall back to 8-bit
+    this.float = !!(gl.getExtension('EXT_color_buffer_float') || gl.getExtension('EXT_color_buffer_half_float'));
     gl.getExtension('OES_texture_float_linear');
     this.gl = gl;
     this.buf = gl.createBuffer()!;
@@ -64,6 +66,7 @@ export class GL {
     return r;
   }
   target(w: number, h: number, float = true): Target {
+    float = float && this.float;
     const gl = this.gl;
     const tex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, tex);

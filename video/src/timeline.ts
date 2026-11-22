@@ -6,13 +6,13 @@ import { Lyrics } from './engine/lyrics';
 import { bridge } from './scenes/bridge';
 import { makeChorus } from './scenes/chorus';
 import { makeDrop } from './scenes/drop';
-import { CREDIT, intro, TITLE } from './scenes/intro';
+import { CHARA_CREDIT, CREDIT, intro, TITLE } from './scenes/intro';
 import { outro } from './scenes/outro';
 import { prechorus } from './scenes/prechorus';
 import { verse1 } from './scenes/verse1';
 import { verse2 } from './scenes/verse2';
 
-export const EXTRA_TEXT = TITLE + CREDIT + '0123456789目的地：なしDAY n+1 1R 日月火水木金土' + 'abcdefghijklmnopqrstuvwxyz';
+export const EXTRA_TEXT = TITLE + CREDIT + CHARA_CREDIT + '0123456789目的地：なしDAY n+1 1R 日月火水木金土' + 'abcdefghijklmnopqrstuvwxyz';
 
 export function buildTimeline(au: Audio, ly: Lyrics): Entry[] {
   const sec = (n: string) => au.sec(n).start;

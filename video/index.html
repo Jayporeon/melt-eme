@@ -2,19 +2,73 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#000000" />
 <title>とけちゃう、エメ</title>
 <style>
-  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  body { font: 14px system-ui, -apple-system, "Segoe UI", sans-serif; color: #e8f6ff; user-select: none; -webkit-user-select: none; }
   #c { display: block; width: 100vw; height: 56.25vw; max-height: 100vh; max-width: 177.78vh; margin: auto; position: absolute; inset: 0; }
-  #hud { position: fixed; left: 8px; bottom: 6px; color: #9cd; font: 12px ui-monospace, monospace; opacity: .8; pointer-events: none; }
-  body.render #hud { display: none; }
+  #hud { position: fixed; left: 8px; top: 6px; color: #9cd; font: 12px ui-monospace, monospace; opacity: .75; pointer-events: none; }
+
+  /* loading */
+  #loading { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #000; z-index: 5; }
+  #loading .dot { width: 14px; height: 14px; border-radius: 50%; background: #5ccbff; box-shadow: 0 0 18px #5ccbff; animation: drip 1.1s ease-in-out infinite; }
+  #loading .msg { color: #9cd; letter-spacing: .08em; font-size: 13px; }
+  @keyframes drip { 0%, 100% { transform: translateY(-6px); opacity: .5 } 50% { transform: translateY(6px); opacity: 1 } }
+
+  /* big play button in the middle (shown while paused) */
+  #big { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 88px; height: 88px; border-radius: 50%; border: 0;
+         background: rgba(4, 14, 32, .55); box-shadow: 0 0 0 2px rgba(92, 203, 255, .6), 0 0 28px rgba(92, 203, 255, .35); color: #e8f6ff;
+         display: flex; align-items: center; justify-content: center; cursor: pointer; transition: opacity .25s; z-index: 3; }
+  #big svg { width: 34px; height: 34px; margin-left: 5px; }
+  #hint { position: fixed; left: 50%; top: calc(50% + 66px); transform: translateX(-50%); color: #bfeaff; font-size: 13px; letter-spacing: .06em;
+          text-shadow: 0 1px 4px #000; white-space: nowrap; transition: opacity .25s; z-index: 3; pointer-events: none; }
+
+  /* control bar */
+  #bar { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 10px;
+         padding: 22px max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+         background: linear-gradient(to top, rgba(0, 4, 12, .85), rgba(0, 4, 12, 0)); transition: opacity .3s; z-index: 4; }
+  #bar button { flex: none; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: #e8f6ff; cursor: pointer;
+                display: flex; align-items: center; justify-content: center; }
+  #bar button:active { background: rgba(92, 203, 255, .18); }
+  #bar svg { width: 22px; height: 22px; }
+  #time { flex: none; font: 12px ui-monospace, monospace; color: #bfeaff; min-width: 86px; text-align: center; }
+  #seek { flex: 1; min-width: 60px; accent-color: #5ccbff; height: 28px; cursor: pointer; }
+
+  .idle #bar, .idle #big, .idle #hint { opacity: 0; pointer-events: none; }
+  .idle { cursor: none; }
+  .playing #big, .playing #hint { opacity: 0; pointer-events: none; }
+  .ready #loading { display: none; }
+  body:not(.ready) #bar, body:not(.ready) #big, body:not(.ready) #hint { display: none; }
+
+  body.render #hud, body.render #bar, body.render #big, body.render #hint, body.render #loading { display: none; }
   body.render #c { width: auto; height: auto; position: static; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="hud"></div>
+
+<div id="loading"><div class="dot"></div><div class="msg">Loading…</div></div>
+
+<button id="big" aria-label="Play">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg>
+</button>
+<div id="hint">Tap to play / タップで再生</div>
+
+<div id="bar">
+  <button id="pp" aria-label="Play / pause">
+    <svg class="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l12.5-7.5z"/></svg>
+    <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>
+  </button>
+  <span id="time">0:00 / 4:06</span>
+  <input id="seek" type="range" min="0" max="246.4" step="0.01" value="0" aria-label="Seek" />
+  <button id="fs" aria-label="Fullscreen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  </button>
+</div>
+
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>

@@ -8,7 +8,7 @@ import { Frame, Post } from '../engine/engine';
 import { Ctx, drop, glyph, layout, tablet, text } from '../engine/type';
 import { clamp, easeIn, easeOut, inv, smooth, spring } from '../engine/util';
 import { blister, C, F, hot, musicBox, rgba, ripple, win } from './_kit';
-import { CREDIT, TITLE } from './intro';
+import { CHARA_CREDIT, CREDIT, TITLE } from './intro';
 
 export function outro(f: Frame, ink: Ctx, _sub: Ctx): Partial<Post> {
   const t = f.t;
@@ -136,6 +136,9 @@ export function outro(f: Frame, ink: Ctx, _sub: Ctx): Partial<Post> {
     });
     const ca = smooth(cardIn + 1.0, cardIn + 1.8, t) * (1 - smooth(244, 245.8, t));
     text(ink, CREDIT, 960, 610, 30, F.body, { weight: 300, fill: rgba(C.pale, 0.9), alpha: ca, track: 0.05 });
+    // character credit, a little after the song credit
+    const cc = smooth(cardIn + 1.6, cardIn + 2.4, t) * (1 - smooth(244, 245.8, t));
+    text(ink, CHARA_CREDIT, 960, 668, 24, F.body, { weight: 300, fill: rgba(C.pale, 0.78), alpha: cc, track: 0.04 });
     // one drop forms under the title and falls
     // the drop is let go (d0 + 0.8) on the echoed ……しようかな, which the lead and backing stems both start at
     // 239.3 s (the user heard it around 3:58.2; at 238.2 only keys/synth are playing)

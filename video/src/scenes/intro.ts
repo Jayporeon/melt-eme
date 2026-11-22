@@ -7,6 +7,8 @@ import { born, C, F, musicBox, rgba, ripple, win } from './_kit';
 
 export const TITLE = 'とけちゃう、エメ';
 export const CREDIT = '歌手　Suno V6　／　作詞　Opus 5.5';
+// shown on the end card: Eme is a fan character created by ぴょんこ
+export const CHARA_CREDIT = 'エメは ぴょんこさん（X: @pyon_ko_）による シャワーズの二次創作キャラクターです';
 
 function whisper(ink: Ctx, f: Frame, i: number, y: number, size: number, gone = 1e9) {
   const w = win(f, i, 0.3, 0.9, 0.4);

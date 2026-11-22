@@ -2,6 +2,9 @@
 
 Vocals　Suno V6　／　Lyrics　Opus 5.5
 
+Eme is a Vaporeon fan character created by ぴょんこ ([X: @pyon_ko_](https://x.com/pyon_ko_)).
+エメは ぴょんこさん（X: @pyon_ko_）による シャワーズの二次創作キャラクターです。
+
 > **Content note:** this work depicts misuse of over-the-counter cough medicine (overdose), disability and isolation.
 > If you are going through something similar, please reach out to someone you trust or to a local mental-health helpline.
 
@@ -16,7 +19,7 @@ The same code can:
 - **play live in the browser**, rendering each frame as it plays (seek, step frame by frame)
 - **export a video**: headless Chrome renders every frame and ffmpeg encodes it (2560×1440, 60 fps by default)
 
-**Watch online:** <https://jayporeon.github.io/melt-eme/> — the MV rendered live in your browser. Press **Space** to play once it has loaded (needs a browser with WebGL2; desktop Chrome or Edge recommended).
+**Watch online:** <https://jayporeon.github.io/melt-eme/> — the MV rendered live in your browser, on a computer or a phone. Once it has loaded, tap the picture (or press **Space**) to play (needs a browser with WebGL2).
 
 The rendered video files (2560×1440, about 1.4 GB; 1920×1080, about 467 MB) are too large for the repository. Download them from [Releases](https://github.com/Jayporeon/melt-eme/releases), or render them yourself (see [Export a video](#export-a-video)).
 
@@ -166,7 +169,11 @@ bun install
 bun run dev
 ```
 
-Open <http://localhost:5177> in Chrome (or Edge). Press **Space** to start playback (browsers need one key press before they allow sound).
+Open <http://localhost:5177> in a browser. Click or tap the picture (or press **Space**) to start playback (browsers need one click or key press before they allow sound).
+
+**On a phone or tablet:** tap the picture to play or pause. A control bar (play / pause, time, seek bar, fullscreen) appears at the bottom whenever you tap, and hides itself after a few seconds while playing. Phones render at 960×540 to keep playback smooth. Turn the phone sideways, or use the fullscreen button, for a bigger picture.
+
+**On a computer:** click the picture or use the control bar, or the keyboard:
 
 | Key | Action |
 |---|---|
@@ -174,12 +181,13 @@ Open <http://localhost:5177> in Chrome (or Edge). Press **Space** to start playb
 | ← / → | back / forward 1 s (hold Shift for 5 s) |
 | , / . | back / forward one frame (1/60 s) |
 | [ / ] | jump to the previous / next section |
-| h | hide / show the time bar in the bottom-left corner |
+| f | fullscreen |
+| h | hide / show the debug line (time, beat, scene) in the top-left corner |
 
 URL parameters:
 
 - `?t=74` — start at 74 s (e.g. <http://localhost:5177/?t=74>)
-- `?scale=1` — canvas resolution factor. The preview defaults to `0.6667` (1280×720); `1` is 1920×1080 and `1.3333` is the 2560×1440 used for export
+- `?scale=1` — canvas resolution factor. The preview defaults to `0.6667` (1280×720) on a computer and `0.5` (960×540) on a phone; `1` is 1920×1080 and `1.3333` is the 2560×1440 used for export
 
 The preview and the export run **the same code**, and each frame depends only on the song time (no random numbers, no wall clock), so what you see in the preview is exactly what gets exported.
 When you save a change in `video/src/`, the browser reloads automatically.
@@ -335,7 +343,7 @@ video/
 | Drop | `drop.ts` | stripes and a wallpaper of the word; one big card per vocal chop; ぷち and ごくん pop tablets; everything melts away at the end |
 | Verse 2 | `verse2.ts` | blurred words behind a soap film; 幸せ inside a bubble that bursts; the comedown: bathroom tiles, double vision, words toppling onto the floor and melting into a puddle |
 | Bridge | `bridge.ts` | the ceiling; stutter glitches; the same 天井 every day; words circling the edge of the frame; a calendar with pension day; melt and set again; an endless roll |
-| Outro | `outro.ts` | the music box returns; words close like eyes; drops become words; end title and credits |
+| Outro | `outro.ts` | the music box returns; words close like eyes; drops become words; end title, credits and the character credit |
 
 Fonts (all from [Fontsource](https://fontsource.org), SIL Open Font License): Dela Gothic One, Hachi Maru Pop, M PLUS 1, DotGothic16, Klee One, Shippori Mincho B1, Zen Maru Gothic, IBM Plex Mono.
 

@@ -18,6 +18,8 @@ import { F } from './engine/type';
 import { buildTimeline, EXTRA_TEXT } from './timeline';
 
 const qs = new URLSearchParams(location.search);
+// phones / tablets: coarse pointer or touch points
+const TOUCH = matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
 const FPS = 60;
 
 async function loadFonts(ly: Lyrics) {
@@ -44,7 +46,8 @@ async function main() {
   const ly = new Lyrics(ld);
   await loadFonts(ly);
   const canvas = document.getElementById('c') as HTMLCanvasElement;
-  const scale = parseFloat(qs.get('scale') ?? (qs.has('render') ? String(2560 / 1920) : '0.6667'));
+  // preview renders 1280x720 on desktop, 960x540 on phones (lighter); export renders 2560x1440
+const scale = parseFloat(qs.get('scale') ?? (qs.has('render') ? String(2560 / 1920) : TOUCH ? '0.5' : '0.6667'));
   const eng = new Engine(canvas, scale, au, ly, buildTimeline(au, ly));
   (window as any).__eng = eng;
 
@@ -86,28 +89,109 @@ async function renderMode(eng: Engine) {
 }
 
 // --------------------------------------------------------------------------- preview
+// Desktop: keyboard (space, arrows, , . [ ] h) and the control bar. Phone / tablet: tap the picture to play or
+// pause, the bar (play, time, seek, fullscreen) shows on a tap and hides itself while playing.
 function previewMode(eng: Engine) {
   const audio = new window.Audio('audio/song.m4a');
   audio.preload = 'auto';
-  const hud = document.getElementById('hud')!;
+  const $ = (id: string) => document.getElementById(id)!;
+  const hud = $('hud');
+  const seekEl = $('seek') as HTMLInputElement;
+  const timeEl = $('time');
+  const dur = eng.au.duration;
+  seekEl.max = String(dur);
   let t = parseFloat(qs.get('t') ?? '0');
   audio.currentTime = t;
   let playing = false;
+  let dragging = false;
   let last = performance.now();
-  let hide = false;
+  let hide = TOUCH; // the debug time bar (top left) starts hidden on touch devices
   const fmt = (x: number) => `${Math.floor(x / 60)}:${(x % 60).toFixed(2).padStart(5, '0')}`;
+  const fmtShort = (x: number) => `${Math.floor(x / 60)}:${String(Math.floor(x % 60)).padStart(2, '0')}`;
+
+  // ---- play state + auto-hiding controls
+  let idleTimer = 0;
+  const showUI = () => {
+    document.body.classList.remove('idle');
+    clearTimeout(idleTimer);
+    if (playing) idleTimer = window.setTimeout(() => document.body.classList.add('idle'), 2500);
+  };
+  const setPlaying = (p: boolean) => {
+    playing = p;
+    document.body.classList.toggle('playing', p);
+    ($('pp').querySelector('.i-play') as HTMLElement).style.display = p ? 'none' : '';
+    ($('pp').querySelector('.i-pause') as HTMLElement).style.display = p ? '' : 'none';
+    if (p) {
+      if (t >= dur - 0.05) t = 0;
+      audio.currentTime = t;
+      audio.play().catch(() => setPlaying(false));
+    } else audio.pause();
+    showUI();
+  };
+  const toggle = () => setPlaying(!playing);
   const seek = (x: number) => {
-    t = Math.max(0, Math.min(eng.au.duration - 1 / FPS, x));
+    t = Math.max(0, Math.min(dur - 1 / FPS, x));
     audio.currentTime = t;
   };
+  (window as any).__seek = seek;
+  audio.addEventListener('ended', () => setPlaying(false));
+
+  // ---- pointer: tap / click on the picture toggles play; any movement shows the bar
+  const bar = $('bar');
+  document.addEventListener('pointerup', (e) => {
+    if (bar.contains(e.target as Node)) return;
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    toggle();
+  });
+  document.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'mouse') showUI();
+  });
+  $('pp').addEventListener('click', toggle);
+  $('big').addEventListener('pointerup', (e) => {
+    e.stopPropagation();
+    toggle();
+  });
+  // ---- seek bar
+  seekEl.addEventListener('pointerdown', () => {
+    dragging = true;
+    showUI();
+  });
+  seekEl.addEventListener('input', () => {
+    seek(parseFloat(seekEl.value));
+    showUI();
+  });
+  const endDrag = () => {
+    dragging = false;
+  };
+  seekEl.addEventListener('pointerup', endDrag);
+  seekEl.addEventListener('change', endDrag);
+  // ---- fullscreen (and landscape on phones that allow it)
+  $('fs').addEventListener('click', async () => {
+    const d = document as any;
+    try {
+      if (document.fullscreenElement || d.webkitFullscreenElement) {
+        await (document.exitFullscreen?.() ?? d.webkitExitFullscreen?.());
+      } else {
+        const el = document.documentElement as any;
+        await (el.requestFullscreen?.({ navigationUI: 'hide' }) ?? el.webkitRequestFullscreen?.());
+        await (screen.orientation as any)?.lock?.('landscape').catch(() => {});
+      }
+    } catch {
+      /* not supported (e.g. iPhone Safari): ignore */
+    }
+    showUI();
+  });
+
+  // ---- keyboard (desktop). A focused button would also react to Space on keyup: cancel that.
+  window.addEventListener('keyup', (e) => {
+    if (e.code === 'Space') e.preventDefault();
+  });
+  for (const b of document.querySelectorAll('#bar button, #seek')) b.addEventListener('pointerup', () => (b as HTMLElement).blur());
   window.addEventListener('keydown', (e) => {
+    if (e.target === seekEl && (e.code === 'ArrowRight' || e.code === 'ArrowLeft')) seekEl.blur();
     const big = e.shiftKey ? 5 : 1;
     if (e.code === 'Space') {
-      playing = !playing;
-      if (playing) {
-        audio.currentTime = t;
-        audio.play();
-      } else audio.pause();
+      toggle();
       e.preventDefault();
     } else if (e.code === 'ArrowRight') seek(t + big);
     else if (e.code === 'ArrowLeft') seek(t - big);
@@ -119,8 +203,14 @@ function previewMode(eng: Engine) {
       const j = Math.max(0, Math.min(tl.length - 1, i + (e.key === ']' ? 1 : -1)));
       seek(tl[j].start + 0.001);
     } else if (e.key === 'h') hide = !hide;
+    else if (e.key === 'f') ($('fs') as HTMLButtonElement).click();
+    showUI();
   });
-  (window as any).__seek = seek;
+
+  if (TOUCH) $('hint').textContent = 'Tap to play / タップで再生';
+  else $('hint').textContent = 'Click or press Space / クリック・スペースで再生';
+  document.body.classList.add('ready');
+
   const loop = () => {
     const now = performance.now();
     if (playing) {
@@ -129,18 +219,25 @@ function previewMode(eng: Engine) {
       const at = audio.currentTime;
       if (Math.abs(at - t) > 0.08) t = at;
       else t += (at - t) * 0.1;
+      if (t >= dur) {
+        t = dur - 1 / FPS;
+        setPlaying(false);
+      }
     }
     last = now;
     eng.render(t);
+    if (!dragging) seekEl.value = String(t);
+    timeEl.textContent = `${fmtShort(t)} / ${fmtShort(dur)}`;
     hud.style.display = hide ? 'none' : 'block';
-    hud.textContent = `${fmt(t)}  beat ${eng.au.beatAt(t).toFixed(2)}  ${eng.lastScene}   [space] play  ←/→ ±1s (shift 5s)  ,/. frame  [ ] scene  h hide`;
+    hud.textContent = `${fmt(t)}  beat ${eng.au.beatAt(t).toFixed(2)}  ${eng.lastScene}   [space] play  ←/→ ±1s (shift 5s)  ,/. frame  [ ] scene  f full  h hide`;
     requestAnimationFrame(loop);
   };
   loop();
 }
 
 main().catch((e) => {
-  document.body.innerHTML = `<pre style="color:#f88;white-space:pre-wrap">${e?.stack ?? e}</pre>`;
+  document.body.innerHTML = `<pre style="color:#f88;white-space:pre-wrap;padding:16px">Could not start the preview.
+${e?.stack ?? e}</pre>`;
   console.error(e);
   const q = new URLSearchParams(location.search);
   if (q.has('render')) {
