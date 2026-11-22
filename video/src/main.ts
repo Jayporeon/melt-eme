@@ -104,6 +104,7 @@ function previewMode(eng: Engine) {
   audio.currentTime = t;
   let playing = false;
   let dragging = false;
+  let lastResume = 0;
   let last = performance.now();
   let hide = TOUCH; // the debug time bar (top left) starts hidden on touch devices
   const fmt = (x: number) => `${Math.floor(x / 60)}:${(x % 60).toFixed(2).padStart(5, '0')}`;
@@ -152,19 +153,35 @@ function previewMode(eng: Engine) {
     toggle();
   });
   // ---- seek bar
+  // While dragging only the picture follows the bar; the audio is moved once, on release. Seeking the audio on
+  // every input event (dozens per second) leaves phone browsers stuck "seeking", which froze the picture.
+  // Phones may end a drag with pointercancel / touchend instead of pointerup, so every way of letting go ends it.
+  const commitSeek = () => {
+    audio.currentTime = t;
+    if (playing) audio.play().catch(() => setPlaying(false));
+  };
   seekEl.addEventListener('pointerdown', () => {
     dragging = true;
     showUI();
   });
+  seekEl.addEventListener('touchstart', () => {
+    dragging = true;
+    showUI();
+  }, { passive: true });
   seekEl.addEventListener('input', () => {
-    seek(parseFloat(seekEl.value));
+    t = Math.max(0, Math.min(dur - 1 / FPS, parseFloat(seekEl.value)));
+    if (!dragging) commitSeek(); // a single tap on the bar, or the keyboard
     showUI();
   });
   const endDrag = () => {
+    if (!dragging) return;
     dragging = false;
+    commitSeek();
+    showUI();
   };
-  seekEl.addEventListener('pointerup', endDrag);
-  seekEl.addEventListener('change', endDrag);
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture', 'touchend', 'touchcancel', 'change']) seekEl.addEventListener(ev, endDrag);
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('touchend', endDrag);
   // ---- fullscreen (and landscape on phones that allow it)
   $('fs').addEventListener('click', async () => {
     const d = document as any;
@@ -213,12 +230,21 @@ function previewMode(eng: Engine) {
 
   const loop = () => {
     const now = performance.now();
-    if (playing) {
-      // smooth clock that follows the audio element
-      t += (now - last) / 1000;
-      const at = audio.currentTime;
-      if (Math.abs(at - t) > 0.08) t = at;
-      else t += (at - t) * 0.1;
+    if (playing && !dragging) {
+      if (audio.seeking || audio.readyState < 3) {
+        // audio still seeking / buffering (common on phones after a seek): hold the picture where it is
+      } else {
+        if (audio.paused && now - lastResume > 800) {
+          // the browser paused the audio by itself (phone interruption, seek): resume, or show the play button
+          lastResume = now;
+          audio.play().catch(() => setPlaying(false));
+        }
+        // smooth clock that follows the audio element
+        t += (now - last) / 1000;
+        const at = audio.currentTime;
+        if (Math.abs(at - t) > 0.08) t = at;
+        else t += (at - t) * 0.1;
+      }
       if (t >= dur) {
         t = dur - 1 / FPS;
         setPlaying(false);
