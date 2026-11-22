@@ -338,3 +338,5 @@ video/
 | Outro | `outro.ts` | the music box returns; words close like eyes; drops become words; end title and credits |
 
 Fonts (all from [Fontsource](https://fontsource.org), SIL Open Font License): Dela Gothic One, Hachi Maru Pop, M PLUS 1, DotGothic16, Klee One, Shippori Mincho B1, Zen Maru Gothic, IBM Plex Mono.
+
+# エメ originally created by ぴょんこ (X: @Pyon_ko_)
